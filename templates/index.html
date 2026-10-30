@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>Directorio de software | Meta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="top"><a class="brand" href="/"><span class="brand-icon">{ }</span> directorio<span class="dot">.</span></a><span class="local"><i></i> Base de datos local</span></header>
+  <main class="wrap">
+    <section class="intro"><div><p class="eyebrow">TECNOLOGÍA EN LOS LLANOS</p><h1>Encuentra tu próxima<br><em>casa de software.</em></h1><p class="sub">Explora el directorio de empresas desarrolladoras de Villavicencio y el Meta.</p></div><div class="intro-art" aria-hidden="true"><span class="orb"></span><span class="code">&lt;/&gt;</span><span class="spark">✳</span><span class="tiny">META · CO</span></div></section>
+    <section class="directory" aria-label="Directorio"><div class="toolbar"><div class="search"><span>⌕</span><input id="search" type="search" placeholder="Buscar por nombre…" autocomplete="off" aria-label="Buscar casa desarrolladora por nombre"><kbd>⌘ K</kbd></div><button class="add" id="add">＋ <span>Nueva empresa</span></button></div>
+      <div class="result-line"><span id="result-count">Cargando directorio…</span><span class="sort-label">DIRECTORIO · META</span></div>
+      <div id="cards" class="cards" aria-live="polite"></div>
+      <div id="empty" class="empty" hidden><span class="empty-icon">⌕</span><h2>No encontramos coincidencias</h2><p>Prueba con otro nombre o agrega una empresa al directorio.</p></div>
+    </section>
+    <footer><span>Directorio de casas desarrolladoras de software</span><span>Con tecnología <b>MongoDB</b></span></footer>
+  </main>
+  <dialog id="editor"><form id="company-form"><div class="modal-head"><div><p class="eyebrow">FICHA DE EMPRESA</p><h2 id="modal-title">Nueva empresa</h2></div><button type="button" class="close" id="close" aria-label="Cerrar">×</button></div><input type="hidden" id="company-id"><label>Nombre<input name="name" required maxlength="100" placeholder="Nombre de la empresa"></label><label>Dirección<input name="address" required maxlength="180" placeholder="Dirección o ciudad"></label><label>Especialidad<input name="specialty" required maxlength="140" placeholder="Ej. Desarrollo web y aplicaciones"></label><label>Teléfono<input name="phone" required maxlength="40" placeholder="Número de contacto"></label><label>Sitio web oficial <span class="optional">(opcional)</span><input name="website" type="url" placeholder="https://www.ejemplo.com"></label><p class="hint">Al guardar el sitio oficial, el distintivo de la ficha será un enlace a esa página.</p><p class="error" id="form-error" role="alert"></p><div class="modal-actions"><button type="button" class="cancel" id="cancel">Cancelar</button><button type="submit" class="save">Guardar empresa <span>→</span></button></div></form></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body></html>
