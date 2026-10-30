@@ -6,6 +6,8 @@ const dialog = document.querySelector('#editor');
 const form = document.querySelector('#company-form');
 const toast = document.querySelector('#toast');
 let timer;
+let previewDelay;
+let lastPreviewUrl = '';
 
 function initials(name) {
   return name.replace(/[^\p{L}\p{N}\s]/gu, ' ').trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('').toUpperCase();
@@ -39,13 +41,13 @@ async function load() {
 function openNew() {
   form.reset(); document.querySelector('#company-id').value = '';
   document.querySelector('#modal-title').textContent = 'Nueva empresa';
-  document.querySelector('#form-error').textContent = ''; dialog.showModal();
+  document.querySelector('#form-error').textContent = ''; document.querySelector('#preview-status').textContent = 'Al escribir una URL, intentaremos completar los datos que el sitio publique.'; lastPreviewUrl = ''; dialog.showModal();
 }
 function openEdit(company) {
   form.reset(); document.querySelector('#company-id').value = company.id;
   document.querySelector('#modal-title').textContent = 'Editar empresa';
   for (const field of ['name','address','specialty','phone','website']) form.elements[field].value = company[field] || '';
-  document.querySelector('#form-error').textContent = ''; dialog.showModal();
+  document.querySelector('#form-error').textContent = ''; document.querySelector('#preview-status').textContent = 'Al escribir una URL, intentaremos completar los datos que el sitio publique.'; lastPreviewUrl = company.website || ''; dialog.showModal();
 }
 let lastItems = [];
 const originalRender = render;
@@ -55,6 +57,27 @@ document.querySelector('#add').addEventListener('click', openNew);
 document.querySelector('#close').addEventListener('click', () => dialog.close());
 document.querySelector('#cancel').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+form.elements.website.addEventListener('input', () => {
+  clearTimeout(previewDelay);
+  const url = form.elements.website.value.trim();
+  if (!url || url === lastPreviewUrl) return;
+  previewDelay = setTimeout(async () => {
+    if (!/^https?:\/\//i.test(url)) return;
+    document.querySelector('#preview-status').textContent = 'Consultando el sitio…';
+    try {
+      const info = await request('/api/preview-url', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url})});
+      if (form.elements.website.value.trim() !== url) return;
+      if (info.name) form.elements.name.value = info.name.slice(0, 100);
+      if (info.specialty) form.elements.specialty.value = info.specialty.slice(0, 140);
+      if (info.address) form.elements.address.value = info.address.slice(0, 180);
+      if (info.phone) form.elements.phone.value = info.phone.slice(0, 40);
+      lastPreviewUrl = url;
+      document.querySelector('#preview-status').textContent = 'Datos encontrados. Revísalos y corrígelos si hace falta antes de guardar.';
+    } catch (error) {
+      document.querySelector('#preview-status').textContent = `${error.message} Puedes completar la ficha manualmente.`;
+    }
+  }, 800);
+});
 cards.addEventListener('click', async event => {
   const editId = event.target.closest('[data-edit]')?.dataset.edit;
   const deleteId = event.target.closest('[data-delete]')?.dataset.delete;

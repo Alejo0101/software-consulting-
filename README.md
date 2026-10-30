@@ -44,3 +44,5 @@ La aplicación lee `MONGODB_URI` y `MONGODB_DATABASE` del archivo `.env`. Para u
 - `seed.py`: carga de datos de ejemplo.
 - `templates/index.html`: página principal y formulario.
 - `static/styles.css`, `static/app.js`: interfaz y llamadas a la API.
+
+Al escribir una URL en el formulario, el navegador pide a Flask una vista previa del sitio. La aplicación lee el título y descripción de la página; intenta obtener dirección y teléfono de datos estructurados Schema.org/JSON-LD si existen. Muchos sitios no publican dirección o teléfono de forma estructurada, y la descripción puede no ser la especialidad real, por eso conviene revisar los campos antes de guardar. Esta función no inicia sesión ni consulta sitios privados.
